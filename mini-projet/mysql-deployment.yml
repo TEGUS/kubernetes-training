@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: mysql-deployment
+    labels:
+        app: mysql
+spec:
+    replicas: 1
+    strategy:
+        type: RollingUpdate
+        rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+    selector:
+        matchLabels:
+            app: mysql
+    template:
+        metadata:
+            labels:
+                app: mysql
+        spec:
+            containers:
+            - name: mysql
+              image: mysql
+              env:
+                - name: MYSQL_DATABASE
+                  value: wordpress
+                - name: MYSQL_USER
+                  value: wordpress
+                - name: MYSQL_PASSWORD
+                  value: wordpress
+                - name: MYSQL_ROOT_PASSWORD
+                  value: wordpress
+              volumeMounts:
+                - mountPath: /var/lib/mysql
+                  name: data-mysql
+            volumes:
+              - name: data-mysql
+                hostPath:
+                  path: /data-mysql
+                  type: Directory
+
